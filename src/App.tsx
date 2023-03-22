@@ -24,10 +24,11 @@ function App() {
   console.log(cubeWidth);
   return (
     <div className="App">
-      <Canvas camera={{ position: [0, 0, 10] }} onCreated={({ gl }) => {
+      <Canvas camera={{ position: [0, 0, 10] }} style={{ width: '80vw', height: '100vh' }} onCreated={({ gl }) => {
         gl.setClearColor(new THREE.Color("#f0f0f0"));
       }} >
         <OrbitControls />
+        <Stars />
         <ambientLight intensity={0.5} />
         <spotLight intensity={0.8} position={[300, 300, 300]} />
         <Cube value={cubeWidth} />

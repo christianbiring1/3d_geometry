@@ -1,8 +1,8 @@
 import React from 'react';
-import * as THREE from 'three';
-import { Canvas } from 'react-three-fiber';
-import { OrbitControls, Stars } from '@react-three/drei';
-import { Box } from '@react-three/drei';
+// import * as THREE from 'three';
+// import { Canvas, useFrame } from 'react-three-fiber';
+// import { OrbitControls, Stars } from '@react-three/drei';
+// import { Box } from '@react-three/drei';
 
 interface ShapeProps {
   value: number;
