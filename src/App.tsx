@@ -3,67 +3,46 @@ import * as THREE from 'three';
 import { Canvas } from 'react-three-fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import Cube from './components/cube';
+import Cylinder from './components/cylinder';
+import Sphere from './components/sphere';
 import './App.css';
 
-const MemoizedCube = React.memo(Cube);
-
-function App() {
+const App: React.FC = () => {
   const [cubeWidth, setCubeWidth] = useState(0);
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-
-  const handleSocketMessage = useCallback((event: MessageEvent) => {
-    const data = JSON.parse(event.data);
-
-    setCubeWidth(data.value);
-  }, []);
-
-  const sockeUrl = useMemo(() => `ws://${window.location.hostname}:8080`, []);
-
+  const [cylinderHeight, setCylinderHeight] = useState(0);
+  const [sphereRadius, setSphereRadius] = useState(0);
 
   useEffect(() => {
-    const socket = new WebSocket(sockeUrl);
-    socket.binaryType = 'arraybuffer';
+    const socket = new WebSocket("ws://localhost:8080");
 
-    socket.onmessage = handleSocketMessage;
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
 
-    socket.onopen = () => {
-      console.log('WebSocket connection open');
+      setCubeWidth(data.value);
+      setCylinderHeight(data.value);
+      setSphereRadius(data.value);
+      console.log(data.value)
     };
-
-    socket.onclose = () => {
-      console.log('WebSocket connection closed');
-      setSocket(null);
-    };
-    // socket.onmessage = (e) => {
-    //   const data = JSON.parse(e.data);
-
-    //   setCubeWidth(data.value);
-    // };
-
-    setSocket(socket);
 
     return () => {
       socket.close();
     };
-  }, [sockeUrl, handleSocketMessage]);
+  }, []);
 
-  const cubeProps = useMemo(() => ({ value: cubeWidth }), [cubeWidth]);
-
-  console.log(cubeWidth);
   return (
-    <div className="App">
-      <Canvas camera={{ position: [0, 0, 10] }} style={{ width: '80vw', height: '100vh' }} onCreated={({ gl }) => {
+    <div>
+      <Canvas camera={{ position: [0, 0, 10] }} style={{ width:"100vw", height:"100vh"}} onCreated={({ gl }) => {
         gl.setClearColor(new THREE.Color("#f0f0f0"));
-      }} >
+      }}>
         <OrbitControls />
-        <Stars />
         <ambientLight intensity={0.5} />
-        <spotLight intensity={0.8} position={[300, 300, 300]} />
-        <MemoizedCube {...cubeProps} />
-        {/* <Cube value={cubeWidth} /> */}
+        <spotLight intensity={0.8} position={[300, 300, 400]} />
+        <Cube value={cubeWidth} />
+        <Cylinder value={cylinderHeight} />
+        <Sphere value={sphereRadius} />
       </Canvas>
     </div>
   );
-}
+};
 
 export default App;
